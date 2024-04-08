@@ -7,4 +7,7 @@ Further Implementations:
 
 **Test Endpoints**
 
+Write Code:
 curl -X POST http://127.0.0.1:5000/generate_code -H "Content-Type: application/json" -d "{\"prompt\":\"Create a sample chart using matplotlib\"}"
+
+curl -X POST -F "file=@/Users/amir/Desktop/code-interpreter/interpreter/lib/python3.11/site-packages/test.py" http://127.0.0.1:5000/execute
