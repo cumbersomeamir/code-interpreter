@@ -19,3 +19,43 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+#Vanilla LLM : Create Final Answer
+
+import os
+from openai import OpenAI
+
+
+# Attempt to read the API key from the environment variable
+api_key = os.getenv("OPENAI_API_KEY")
+if not api_key:
+    raise RuntimeError("OPENAI_API_KEY environment variable not set")
+
+
+
+
+client = OpenAI(api_key=api_key)
+
+
+def create_final_answer(prompt, executed_output):
+    
+
+
+    content = f"This is the prompt by the user{prompt} and this is the executed code output given by code interpreter {executed_output}, please create the final answer"
+    completion = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": content}
+        ]
+    )
+
+    # Extracting the generated code from the response
+    generated_code = completion.choices[0].message.content
+    
+    print(generated_code)
+    
+
+create_final_answer("What is happen in this file", "Unnamed: 0 DOCUMENTS REQUIRED     Unnamed: 2 0        NaN                 NaN           NaN")
+    
