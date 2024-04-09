@@ -4,7 +4,8 @@ File Reader->
 Code Writer->
 Code Executer->
 Vanilla LLM->
-<img width="368" alt="Screenshot 2024-04-08 at 15 58 23" src="https://github.com/cumbersomeamir/code-interpreter/assets/40836125/3656966b-f73c-4bdf-a24b-8ce1e824423c">
+
+![Uploading Screenshot 2024-04-09 at 19.27.03.png…]()
 
 
 Further Implementations:
