@@ -21,7 +21,7 @@ def execute_python_code():
         file.save(filepath)
         try:
         
-            result = subproces.run(['python', filepath], capture_output=True, text=True, timeout=30)
+            result = subprocess.run(['python', filepath], capture_output=True, text=True, timeout=30)
             os.remove(filepath) #Clean up the file after execution
             return jsonify({"output": result.stdout, "error": result.stderr}), 200
         except Exception as e:
