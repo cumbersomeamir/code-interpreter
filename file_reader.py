@@ -75,5 +75,5 @@ def upload_file():
 if __name__ == '__main__':
     # Ensure the temp directory exists
     os.makedirs('./temp', exist_ok=True)
-    app.run(debug=True)
+    app.run(debug=True, port=8081)
 
