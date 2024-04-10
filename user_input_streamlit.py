@@ -1,49 +1,19 @@
 import streamlit as st
-
-def main():
-    # Set the title of the web app
-    st.title("Streamlit Prompt and File Upload Example")
-
-    # Text input for the prompt
-    prompt = st.text_input("Enter your prompt", "")
-
-    # File uploader allows the user to upload files
-    uploaded_file = st.file_uploader("Choose a file")
-
-    # Display the prompt and file name if a file was uploaded
-    if prompt:
-        st.write(f"Entered prompt: {prompt}")
-
-    if uploaded_file is not None:
-        st.write(f"Uploaded file: {uploaded_file.name}")
-
-if __name__ == "__main__":
-    main()
-
-
-#Vanilla LLM : Create Final Answer
-
+import requests
 import os
-from openai import OpenAI
+import openai
 
-
-# Attempt to read the API key from the environment variable
+# Read the API key from the environment variable
 api_key = os.getenv("OPENAI_API_KEY")
 if not api_key:
     raise RuntimeError("OPENAI_API_KEY environment variable not set")
 
-
-
-
-client = OpenAI(api_key=api_key)
-
+# Initialize the OpenAI client
+client = openai.OpenAI(api_key=api_key)
 
 def create_final_answer(prompt, executed_output):
-    
-
-
-    content = f"This is the prompt by the user{prompt} and this is the executed code output given by code interpreter {executed_output}, please create the final answer"
-    completion = client.chat.completions.create(
+    content = f"This is the prompt by the user: '{prompt}' and this is the executed code output given by the code interpreter: '{executed_output}', please create the final answer."
+    response = client.chat_completions.create(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},
@@ -52,10 +22,56 @@ def create_final_answer(prompt, executed_output):
     )
 
     # Extracting the generated code from the response
-    generated_code = completion.choices[0].message.content
-    
-    print(generated_code)
-    
+    final_answer = response.choices[0].message['content']
+    return final_answer
 
-create_final_answer("What is happen in this file", "Unnamed: 0 DOCUMENTS REQUIRED     Unnamed: 2 0        NaN                 NaN           NaN")
-    
+def main():
+    st.title("Streamlit Prompt and File Upload Example")
+
+    prompt = st.text_input("Enter your prompt", "")
+    uploaded_file = st.file_uploader("Choose a file")
+
+    if prompt and uploaded_file:
+        st.write(f"Entered prompt: {prompt}")
+        st.write(f"Uploaded file: {uploaded_file.name}")
+
+        files = {'file': (uploaded_file.name, uploaded_file, uploaded_file.type)}
+        file_reader_response = requests.post('http://localhost:8081/upload', files=files)
+
+        if file_reader_response.status_code == 200:
+            file_content = file_reader_response.json()['content']
+
+            code_writer_response = requests.post(
+                'http://localhost:8082/generate_code',
+                json={'prompt': prompt + " " + file_content}
+            )
+
+            if code_writer_response.status_code == 200:
+                generated_code = code_writer_response.json()['generated_code']
+
+                executer_files = {'file': ('code.py', generated_code, 'text/plain')}
+                code_executer_response = requests.post('http://localhost:8083/execute', files=executer_files)
+
+                if code_executer_response.status_code == 200:
+                    executed_output = code_executer_response.json()
+                    output = executed_output.get('output', '')
+                    error = executed_output.get('error', '')
+
+                    if error:
+                        st.write(f"Execution Error: {error}")
+                    else:
+                        st.write(f"Executed Output: {output}")
+
+                        # Create the final answer using the OpenAI API
+                        final_answer = create_final_answer(prompt, output)
+                        st.write(f"Final Answer: {final_answer}")
+
+                else:
+                    st.error("Error calling the code executor API")
+            else:
+                st.error("Error calling the code writer API")
+        else:
+            st.error("Error calling the file reader API")
+
+if __name__ == "__main__":
+    main()
