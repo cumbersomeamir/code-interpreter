@@ -41,4 +41,4 @@ def generate_code():
     return jsonify({'generated_code': generated_code})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=8082)
