@@ -1,7 +1,7 @@
 import requests
 
 def call_omni_file_reader_api(file_path):
-    url = 'http://127.0.0.1:5000/upload'
+    url = 'http://127.0.0.1:8001/upload'
     files = {'file': (file_path, open(file_path, 'rb'))}
 
     try:
