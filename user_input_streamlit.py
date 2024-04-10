@@ -36,13 +36,13 @@ def main():
         st.write(f"Uploaded file: {uploaded_file.name}")
 
         files = {'file': (uploaded_file.name, uploaded_file, uploaded_file.type)}
-        file_reader_response = requests.post('http://localhost:8081/upload', files=files)
+        file_reader_response = requests.post('http://127.0.0.1:8081/upload', files=files)
 
         if file_reader_response.status_code == 200:
             file_content = file_reader_response.json()['content']
 
             code_writer_response = requests.post(
-                'http://localhost:8082/generate_code',
+                'http://127.0.0.1:8082/generate_code',
                 json={'prompt': prompt + " " + file_content}
             )
 
@@ -50,7 +50,7 @@ def main():
                 generated_code = code_writer_response.json()['generated_code']
 
                 executer_files = {'file': ('code.py', generated_code, 'text/plain')}
-                code_executer_response = requests.post('http://localhost:8083/execute', files=executer_files)
+                code_executer_response = requests.post('http://127.0.0.1:8083/execute', files=executer_files)
 
                 if code_executer_response.status_code == 200:
                     executed_output = code_executer_response.json()
