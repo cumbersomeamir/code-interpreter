@@ -26,7 +26,7 @@ curl -X POST -F "file=@/Users/amir/Desktop/code-interpreter/interpreter/lib/pyth
 
 
 
-pip3 install PyMuPDF openai requests Pillow
+pip3 install PyMuPDF openai requests Pillow PyPDF2
 
 
 Need to install all libraries in the code_executer also for making the code work
