@@ -25,7 +25,7 @@ curl -X POST -F "file=@/Users/amir/Desktop/code-interpreter/interpreter/lib/pyth
 
 
 
-**pip install**
+
 pip3 install PyMuPDF openai requests Pillow
 
 
