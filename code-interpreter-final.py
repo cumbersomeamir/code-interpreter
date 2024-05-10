@@ -72,7 +72,7 @@ def generate_code(file_head, prompt, file_path):
     completion = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "system", "content": "You only generate python code for advanced analysis"},
             {"role": "user", "content": content}
         ]
     )
@@ -122,3 +122,8 @@ print("Execution result:", execution_result)
 #2 - Append the extracted name of the file to pwd
 #3 - CXhange code for extracting only the first 5 lines from the file, instead of the whole file
 #4 Handle the executed result (What forms can it take?)
+#5 Install libraries which are not installed
+#function calling - not needed
+# Depreciation
+# Documentation
+# Memory
